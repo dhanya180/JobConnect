@@ -206,7 +206,7 @@ static final _formkey = GlobalKey<FormState>();
                                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(18)),
                                   ),
                                  
-                                  onSelected: (String? value) {setState(() {dropdownvalue = value!; }); },
+                                  onSelected: (String? value) {setState(() {dropdownvalue = value!; Gender.text = dropdownvalue; }); },
                                   dropdownMenuEntries: list.map<DropdownMenuEntry<String>>((String value) 
                                   {return DropdownMenuEntry<String>(value: value, label: value);  }).toList(),
                                                   ),
@@ -414,6 +414,9 @@ Container(
             Container(
                     padding: const EdgeInsets.only(top: 2, left: 3),
                     child: ElevatedButton( onPressed: () { 
+
+                      if(Password.value.text == ConfirmPassword.value.text)
+                      {
                       if (_formkey.currentState!.validate()) { 
 
                    String userRegisterDetails = jsonEncode(
@@ -438,7 +441,19 @@ Container(
                    log('composed-update-request ', name: userRegisterDetails);
                    _postUserRegisterData(userRegisterDetails);
                     }
-
+                    }
+                    else{
+                                          showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                                title: const Text("Password Mismatch"),
+                                content: const Text("Your Password and Reentered Password must match."),
+                                actions: [ TextButton(onPressed: () => {Navigator.pop(context),
+                               // Navigator.of(context).pushNamed('/welcome'), 
+                                }, child: const Text('OK')) ]
+                            )
+                     );// showDialog
+                    }
                      },
                             style: ElevatedButton.styleFrom(shape: const StadiumBorder(),
                                                             padding: const EdgeInsets.symmetric(vertical: 12),
