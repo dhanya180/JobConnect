@@ -135,6 +135,7 @@ void handleJobStatusFilter(int item)
     super.initState();
         _getJobTypesData();
     _getJobData();
+    
   }
 
 
@@ -149,6 +150,7 @@ void handleJobStatusFilter(int item)
                     jobsList.add(_jobtypesModel![i].jobType);
 
                 }
+                jobsList.sort((a, b) => a.compareTo(b));
           }
       )
       );
@@ -290,71 +292,14 @@ return 0;
       appBar:    
  AppBar(
       elevation: 30,
-      leading: Column(children: [  const Center( child: Text( 'Add New Job', 
-                                  style: TextStyle(fontSize: 9,color:Color.fromARGB(245, 130, 33, 9) , fontWeight: FontWeight.bold), ),
-                                          ),
-                          
-                                    GestureDetector(
-                                                      onTap: () { Navigator.of(context).pushNamed('/addJob'); },
-                                                      child: const Icon( Icons.add_business, size: 24, color: Color.fromARGB(245, 130, 33, 9),semanticLabel: "Add New Job", ),                          
-                                                    ),
-                                  ],
-                                  
-                        ),
-                        
-      leadingWidth:60, 
-    
-     /*centerTitle: true,
-        title: Text('Jobs ${CurrentUser.JobStatusFilter}',
-        style: const TextStyle(color: Color.fromARGB(255, 101, 155, 155), fontWeight: FontWeight.bold, fontSize: 12)
-        ), */
-
-
         
             actions: <Widget>[
-
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-
-              
-              Column(children: [
-
-                                  
-                      PopupMenuButton<int>( icon: const Icon(Icons.add_reaction),
-       //tooltip: 'You are viewing ${CurrentUser.JobStatusFilter} jobs now',
-       iconSize: 22.0,
-       iconColor: const Color.fromARGB(255, 5, 199, 105),
-          onSelected: (item) => {handleJobStatusFilter(item)},
-          itemBuilder: (context) => [
-            const PopupMenuItem<int>(value: 0, child: Text('AVAILABLE')),
-            const PopupMenuItem<int>(value: 1, child: Text('REQUESTED')),
-            const PopupMenuItem<int>(value: 2, child: Text('ACCEPTED')),
-            const PopupMenuItem<int>(value: 3, child: Text('REQUEST_CANCELLED')),
-            const PopupMenuItem<int>(value: 4, child: Text('ACCEPT_CANCELLED')),
-            const PopupMenuItem<int>(value: 5, child: Text('DECLINED')),
-            const PopupMenuItem<int>(value: 6, child: Text('DELETED')),
-            const PopupMenuItem<int>(value: 7, child: Text('READY')),
-          ],
-        ),
-     //  const SizedBox(height: 0), 
-                 Expanded( child: Text( CurrentUser.JobStatusFilter, 
-                                  style: const TextStyle(fontSize: 8,color:Color.fromARGB(245, 130, 33, 9) , fontWeight: FontWeight.bold), ),
-                                          ),
-        
-              ],),
-
-
-        const SizedBox(width: 10), 
-
-
-                 Column(children: [
-                     Expanded( 
-                      child:DropdownMenu<String>(  //initialSelection: jobsList.first,
+                const SizedBox(width: 7),
+                 Expanded( 
+                      child:DropdownMenu<String>( width:200, //initialSelection: jobsList.first,
                                   hintText: "Job Type", 
                                   inputDecorationTheme: const InputDecorationTheme( isDense: true, 
-                                     contentPadding: EdgeInsets.all(3), constraints: BoxConstraints(maxWidth: 150)   ,
+                                     contentPadding: EdgeInsets.all(3), constraints: BoxConstraints(maxWidth: 200)   ,
                                     //border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                   ),
                                  
@@ -374,21 +319,46 @@ return 0;
                                   dropdownMenuEntries: jobsList.map<DropdownMenuEntry<String>>((String value) 
                                   {return DropdownMenuEntry<String>(value: value, label: value);  }).toList(),
                                                   ),
-                              ), 
-                              ]
-                           
                               ),
 
 
-            Column(children: [
+                                 
+                      PopupMenuButton<int>( icon: const Icon(Icons.add_reaction),
+       tooltip: 'You are viewing ${CurrentUser.JobStatusFilter} jobs now',
+       iconSize: 22.0,
+       iconColor: const Color.fromARGB(255, 5, 199, 105),
+          onSelected: (item) => {handleJobStatusFilter(item)},
+          itemBuilder: (context) => [
+            const PopupMenuItem<int>(value: 0, child: Text('AVAILABLE')),
+            const PopupMenuItem<int>(value: 1, child: Text('REQUESTED')),
+            const PopupMenuItem<int>(value: 2, child: Text('ACCEPTED')),
+            const PopupMenuItem<int>(value: 3, child: Text('REQUEST_CANCELLED')),
+            const PopupMenuItem<int>(value: 4, child: Text('ACCEPT_CANCELLED')),
+            const PopupMenuItem<int>(value: 5, child: Text('DECLINED')),
+            const PopupMenuItem<int>(value: 6, child: Text('DELETED')),
+            const PopupMenuItem<int>(value: 7, child: Text('READY')),
+          ],
+        ),
+     //  const SizedBox(height: 0), 
+     /*            Expanded( child: Text( CurrentUser.JobStatusFilter, 
+                                  style: const TextStyle(fontSize: 8,color:Color.fromARGB(245, 130, 33, 9) , fontWeight: FontWeight.bold), ),
+                                          ),
+        */
+         //     ],),
 
-                   Expanded( child: Text( CurrentUser.Login_Type_Description, 
+
+       // const SizedBox(width: 10), 
+
+
+
+       /*            Expanded( child: Text( CurrentUser.Login_Type_Description, 
                                   style: const TextStyle(fontSize: 8,color:Color.fromARGB(245, 130, 33, 9) , fontWeight: FontWeight.bold), ),
                                           ), 
+                                          */
       PopupMenuButton<int>(
         enabled: true,
        icon: const Icon(Icons.work),
-      // tooltip: 'You are a ${CurrentUser.Login_Type_Description} now',
+       tooltip: 'You are a ${CurrentUser.Login_Type_Description} now',
        iconSize: 22.0,
         iconColor: const Color.fromARGB(255, 104, 58, 183),
           onSelected: (item) => {handleRole(item)},
@@ -397,13 +367,20 @@ return 0;
             const PopupMenuItem<int>(value: 1, child: Text('Job Provider')),
           ],
         ),
+
+                IconButton(
+            icon: const Icon(Icons.add_business),
+            color: Color.fromARGB(245, 184, 15, 15),
+            disabledColor: Color.fromARGB(245, 46, 24, 108),
+            highlightColor: Color.fromARGB(245, 46, 24, 108),
+            iconSize: 22,
+            tooltip: 'Add New Job',
+            onPressed: () {
+              setState(() {  Navigator.of(context).pushNamed('/addJob');  });
+                             // setState(() {        });
+                          },
+            ),
       
-],),
-
-
-                      ]),
-
-
 
     ],
       ),
