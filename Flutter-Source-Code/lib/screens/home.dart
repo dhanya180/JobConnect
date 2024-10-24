@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jobconnect_app/models/get_jobs_model.dart';
@@ -68,23 +69,34 @@ class _HomeState extends State<Home> {
   final List<String> AskingWages = [];
   late List<Jobtypes>? _jobtypesModel = [];
   List<String> jobsList = [];
-  List<String>  JobStatusList = <String>['AVAILABLE', 'REQUESTED', 'ACCEPTED', 'REQUEST_CANCELLED', 'ACCEPT_CANCELLED', 'DECLINED', 'DELETED', 'READY' ];
+  List<String>  JobStatusList = <String>['AVAILABLE', 'REQUESTED', 'ACCEPTED', 'REQUEST_CANCELLED', 'ACCEPT_CANCELLED', 'DECLINED'];
   List<String>  nextActionList_JS = <String>['Request', 'Cancel', 'Cancel', 'Agree', 'Agree', 'Agree', 'Agree', 'Agree'];
   List<String>  nextActionList_JP = <String>['Delete', 'Accept/Decline', 'Cancel', 'Agree', 'Agree', 'Agree', 'Agree', 'Agree'];
   List<bool> showOption = <bool> [true, true, true, false, false, false,  false, false];
   bool enabledForAvailableOnly = false;
-    String JobTypeFilter = 'Others';
+  String JobTypeFilter = 'Others';
 
   void handleRole(int item) {
             switch (item) {
               case 0:
                 CurrentUser.Login_Type = "JS";
                 CurrentUser.Login_Type_Description = "Job Seeker";
+                if ((JobStatusList.contains("DELETED")))
+                {
+                    JobStatusList.remove("DELETED");
+                    JobStatusList.remove("READY");
+                }
+
                 enabledForAvailableOnly = true;
                 break;
               case 1:
                 CurrentUser.Login_Type = "JP";
                 CurrentUser.Login_Type_Description = "Job Provider";
+                if (!(JobStatusList.contains("DELETED")))
+                {
+                      JobStatusList.add("DELETED");
+                      JobStatusList.add("READY");
+                }
                 enabledForAvailableOnly = false;
           
                 break;
@@ -171,6 +183,7 @@ void handleJobStatusFilter(int item)
       String nameJp;
       String emailJp;
 
+
       if ( proceedstatus == 1) {
 
          if(CurrentUser.Login_Type == "JS")
@@ -236,7 +249,12 @@ void handleJobStatusFilter(int item)
 
   }
 
- 
+ int waitfewsec(){
+    Timer(Duration(seconds: 3), () {
+  Text("Yeah, this line is printed after 3 seconds");
+});
+return 0;
+ }
 
     void _postJobUpdateData(String newrequest) async {
     final Status = (await PostJobUpdateApiService().updateJob(newrequest));
@@ -321,34 +339,42 @@ void handleJobStatusFilter(int item)
           ],
         ),
      //  const SizedBox(height: 0), 
-                 Expanded( child: Text( '${CurrentUser.JobStatusFilter}', 
+                 Expanded( child: Text( CurrentUser.JobStatusFilter, 
                                   style: const TextStyle(fontSize: 8,color:Color.fromARGB(245, 130, 33, 9) , fontWeight: FontWeight.bold), ),
                                           ),
         
               ],),
 
 
-       // const SizedBox(width: 10), 
+        const SizedBox(width: 10), 
 
 
                  Column(children: [
                      Expanded( 
                       child:DropdownMenu<String>(  //initialSelection: jobsList.first,
                                   hintText: "Job Type", 
-                                  inputDecorationTheme: InputDecorationTheme( isDense: true, 
-                                     contentPadding: const EdgeInsets.all(3), constraints: const BoxConstraints(maxWidth: 150)   ,
+                                  inputDecorationTheme: const InputDecorationTheme( isDense: true, 
+                                     contentPadding: EdgeInsets.all(3), constraints: BoxConstraints(maxWidth: 150)   ,
                                     //border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                   ),
                                  
                                   onSelected: (String? value) {setState(() {JobTypeFilter = value!; 
-                                  log('Job Type is ', name: JobTypeFilter);
-                                   CurrentUser.JobsFilter.add(JobTypeFilter); setState(() { _getJobData();
+                                   CurrentUser.JobsFilter.clear();
+                                   if(JobTypeFilter == "ALL")
+                                   {
+                                     CurrentUser.JobsFilter = [];
+                                   }
+                                   else{
+                                        CurrentUser.JobsFilter.add(JobTypeFilter); 
+                                   }
+                                   
+                                   setState(() { _getJobData();
                                     
                                   });}   ); },
                                   dropdownMenuEntries: jobsList.map<DropdownMenuEntry<String>>((String value) 
                                   {return DropdownMenuEntry<String>(value: value, label: value);  }).toList(),
                                                   ),
-                              ),
+                              ), 
                               ]
                            
                               ),
@@ -387,12 +413,10 @@ void handleJobStatusFilter(int item)
       body: _jobModel == null || _jobModel!.isEmpty
           ? 
 
-
-
-
-            Text("\n\n\t\tNo Jobs to list in '${CurrentUser.JobStatusFilter}' category. Please change your filter criteria",
-            style: const TextStyle(color: Color.fromARGB(255, 89, 38, 8), fontWeight: FontWeight.w300, fontSize: 20),
-            )
+           //const CircularProgressIndicator()
+           const Text("\n\n\t\t Please Wait for Few Seconds, in case of no data, please change your filter criteria",
+            style: TextStyle(color: Color.fromARGB(255, 89, 38, 8), fontWeight: FontWeight.w300, fontSize: 20),
+            ) 
 
 
           : ListView.builder(
@@ -687,9 +711,10 @@ void handleJobStatusFilter(int item)
             ),
           ],
         ),
-                );
+                        );
               },
             ),
+       
     );
   }
 }
