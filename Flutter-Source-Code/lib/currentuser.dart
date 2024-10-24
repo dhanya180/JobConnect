@@ -7,7 +7,7 @@ class CurrentUser {
   static String Login_Type = "JS"; 
   static String Login_Type_Description = "Job Seeker";
   static String JobStatusFilter = "AVAILABLE";
-  static String NextAction = "Apply";
+  static String NextAction = "Request";
   static String JobStatusToSubmit = "REQUESTED";
   static bool ShowOption = true;
   static List<String> JobsFilter = [];
