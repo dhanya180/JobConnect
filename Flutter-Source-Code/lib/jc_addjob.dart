@@ -112,7 +112,10 @@ static final _formkey = GlobalKey<FormState>();
 
                 for (int i = 0; i < _jobtypesModel!.length; i++){
 
-                    jobsList.add(_jobtypesModel![i].jobType);
+                    if (_jobtypesModel![i].jobType != "ANY"){
+                         jobsList.add(_jobtypesModel![i].jobType);
+                    }
+                   
 
                 }
           }
@@ -362,7 +365,7 @@ void clearFields() {
                                                               lastDate: DateTime(2101) );
                                                         /*   DateTime ourDateExample = DateTime.now();
                                                             final ourDate = ourDateExample.showDateInOwnFormat(); */
-                                                   setState(() { if ((pickedDate) != null) { Date_From.text = (pickedDate.showDateInOwnFormat()[0]); }; });
+                                                   setState(() { if ((pickedDate) != null) { Date_From.text = (pickedDate.showDateInOwnFormat()[0]); } });
                                                                                                   }
                                           ),
                                 ),
@@ -383,7 +386,7 @@ void clearFields() {
                                                               lastDate: DateTime(2101) );
                                                         /*   DateTime ourDateExample = DateTime.now();
                                                             final ourDate = ourDateExample.showDateInOwnFormat(); */
-                                                    setState(() { if ((selectedDate) != null) { Date_To.text = (selectedDate.showDateInOwnFormat()[0]); }; });
+                                                    setState(() { if ((selectedDate) != null) { Date_To.text = (selectedDate.showDateInOwnFormat()[0]); } });
                                                                                                   }
                                           ),
                                 ),

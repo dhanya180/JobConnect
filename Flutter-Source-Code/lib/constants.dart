@@ -7,4 +7,6 @@ class ApiConstants {
   static String updatePwdEndpoint ="";
   static String jobTypesEndpoint="https://dpezos8c2l.execute-api.ap-south-1.amazonaws.com/JobConnect/jobTypes";
   static String addJobEndPoint ="https://hsfq9bsuv0.execute-api.ap-south-1.amazonaws.com/jobConnect/newJob";
+
+  static String logintestwithCORS = "https://if4lmde6g7.execute-api.ap-south-1.amazonaws.com/prod/testLogin";
 }
