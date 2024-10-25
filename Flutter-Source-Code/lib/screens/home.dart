@@ -31,7 +31,10 @@ class ShowJobsScreen extends StatelessWidget {
         appBar: AppBar(
           
                       centerTitle: true,
-                      leading: IconButton( icon: const Icon(Icons.time_to_leave), onPressed: () { Navigator.pop(context); },),
+                      
+                      leading: IconButton( icon: const Icon(Icons.time_to_leave), 
+                                  tooltip: "Exit",
+                                  onPressed: () { Navigator.pop(context); },),
                       backgroundColor: const Color.fromRGBO(255, 255, 255,1),
                       elevation: 10,
                       title: RichText(
@@ -121,6 +124,10 @@ void handleJobStatusFilter(int item)
   {
     enabledForAvailableOnly = false;
   }
+  else if ((CurrentUser.JobStatusFilter == "AVAILABLE") && (CurrentUser.Login_Type == "JS"))
+  {
+    enabledForAvailableOnly = true;
+  }
   log('Job Status ', name: CurrentUser.JobStatusFilter);
   log('Next Job Action ', name: CurrentUser.NextAction);
   log('Login Type ', name: CurrentUser.Login_Type);
@@ -168,7 +175,12 @@ void handleJobStatusFilter(int item)
 
           _jobModel = (await GetJobApiService().getJobs())!;
 
-          Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+          Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
+            if ((CurrentUser.JobStatusFilter == "AVAILABLE") && (CurrentUser.Login_Type == "JS"))
+                    {
+                      enabledForAvailableOnly = true;
+                    }
+          }));
   
   }
 
@@ -294,7 +306,7 @@ return 0;
       elevation: 30,
         
             actions: <Widget>[
-                const SizedBox(width: 7),
+                const SizedBox(width: 10),
                  Expanded( 
                       child:DropdownMenu<String>( width:200, //initialSelection: jobsList.first,
                                   hintText: "Job Type", 
@@ -305,7 +317,7 @@ return 0;
                                  
                                   onSelected: (String? value) {setState(() {JobTypeFilter = value!; 
                                    CurrentUser.JobsFilter.clear();
-                                   if(JobTypeFilter == "ALL")
+                                   if(JobTypeFilter == "ANY")
                                    {
                                      CurrentUser.JobsFilter = [];
                                    }
@@ -320,12 +332,11 @@ return 0;
                                   {return DropdownMenuEntry<String>(value: value, label: value);  }).toList(),
                                                   ),
                               ),
-
-
+const SizedBox(width: 15),
                                  
                       PopupMenuButton<int>( icon: const Icon(Icons.add_reaction),
        tooltip: 'You are viewing ${CurrentUser.JobStatusFilter} jobs now',
-       iconSize: 22.0,
+       iconSize: 26.0,
        iconColor: const Color.fromARGB(255, 5, 199, 105),
           onSelected: (item) => {handleJobStatusFilter(item)},
           itemBuilder: (context) => [
@@ -339,27 +350,16 @@ return 0;
             const PopupMenuItem<int>(value: 7, child: Text('READY')),
           ],
         ),
-     //  const SizedBox(height: 0), 
-     /*            Expanded( child: Text( CurrentUser.JobStatusFilter, 
-                                  style: const TextStyle(fontSize: 8,color:Color.fromARGB(245, 130, 33, 9) , fontWeight: FontWeight.bold), ),
-                                          ),
-        */
-         //     ],),
 
-
-       // const SizedBox(width: 10), 
+        const SizedBox(width: 15),
 
 
 
-       /*            Expanded( child: Text( CurrentUser.Login_Type_Description, 
-                                  style: const TextStyle(fontSize: 8,color:Color.fromARGB(245, 130, 33, 9) , fontWeight: FontWeight.bold), ),
-                                          ), 
-                                          */
       PopupMenuButton<int>(
         enabled: true,
        icon: const Icon(Icons.work),
        tooltip: 'You are a ${CurrentUser.Login_Type_Description} now',
-       iconSize: 22.0,
+       iconSize: 26.0,
         iconColor: const Color.fromARGB(255, 104, 58, 183),
           onSelected: (item) => {handleRole(item)},
           itemBuilder: (context) => [
@@ -368,12 +368,13 @@ return 0;
           ],
         ),
 
+const SizedBox(width: 15),
                 IconButton(
             icon: const Icon(Icons.add_business),
             color: Color.fromARGB(245, 184, 15, 15),
             disabledColor: Color.fromARGB(245, 46, 24, 108),
             highlightColor: Color.fromARGB(245, 46, 24, 108),
-            iconSize: 22,
+            iconSize: 26,
             tooltip: 'Add New Job',
             onPressed: () {
               setState(() {  Navigator.of(context).pushNamed('/addJob');  });
